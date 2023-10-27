@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://cau282wmq0h7k"]
+
+[ext_resource type="Script" path="res://Player.gd" id="1_8my1u"]
+[ext_resource type="PackedScene" uid="uid://bjmu1n08c5fbh" path="res://characters/character_mover.tscn" id="3_8o7gn"]
+[ext_resource type="AudioStream" uid="uid://x5arehdq2vl4" path="res://revolver_shot1.wav" id="3_i8lks"]
+[ext_resource type="Script" path="res://characters/health_manager.gd" id="3_n05g7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ekqt0"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sisqu"]
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+collision_layer = 6
+collision_mask = 3
+script = ExtResource("1_8my1u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ekqt0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_sisqu")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="CharacterMover" parent="." instance=ExtResource("3_8o7gn")]
+
+[node name="HealthManager" type="Node3D" parent="."]
+script = ExtResource("3_n05g7")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+target_position = Vector3(0, 0, -1000)
+collision_mask = 3
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_i8lks")
+bus = &"Sfx"
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="take_damage" binds= [5, Vector3(0, 0, 0)]]
